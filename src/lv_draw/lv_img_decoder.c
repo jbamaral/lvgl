@@ -89,6 +89,9 @@ void _lv_img_decoder_init(void)
 lv_res_t lv_img_decoder_get_info(const char * src, lv_img_header_t * header)
 {
     header->always_zero = 0;
+    header->h = 0;
+    header->w = 0;
+    header->cf = LV_IMG_CF_UNKNOWN;
 
     lv_res_t res = LV_RES_INV;
     lv_img_decoder_t * d;
@@ -148,10 +151,6 @@ lv_res_t lv_img_decoder_open(lv_img_decoder_dsc_t * dsc, const void * src, lv_co
 
         /*Opened successfully. It is a good decoder to for this image source*/
         if(res == LV_RES_OK) break;
-    }
-
-    if(res == LV_RES_INV) {
-        _lv_memset_00(dsc, sizeof(lv_img_decoder_dsc_t));
     }
 
     return res;
