@@ -213,6 +213,7 @@ void lv_indev_set_cursor(lv_indev_t * indev, lv_obj_t * cur_obj)
     indev->cursor = cur_obj;
     lv_obj_set_parent(indev->cursor, lv_disp_get_layer_sys(indev->driver.disp));
     lv_obj_set_pos(indev->cursor, indev->proc.types.pointer.act_point.x, indev->proc.types.pointer.act_point.y);
+    lv_obj_set_click(indev->cursor, false);
 }
 
 #if LV_USE_GROUP
@@ -1180,9 +1181,9 @@ static void indev_click_focus(lv_indev_proc_t * proc)
                     if(indev_reset_check(proc)) return;
                 }
 
-                lv_signal_send(indev_obj_act, LV_SIGNAL_FOCUS, NULL);
+                lv_signal_send(obj_to_focus, LV_SIGNAL_FOCUS, NULL);
                 if(indev_reset_check(proc)) return;
-                lv_event_send(indev_obj_act, LV_EVENT_FOCUSED, NULL);
+                lv_event_send(obj_to_focus, LV_EVENT_FOCUSED, NULL);
                 if(indev_reset_check(proc)) return;
             }
         }
@@ -1221,9 +1222,9 @@ static void indev_click_focus(lv_indev_proc_t * proc)
                 if(indev_reset_check(proc)) return;
             }
             else {
-                lv_signal_send(indev_obj_act, LV_SIGNAL_FOCUS, NULL);
+                lv_signal_send(obj_to_focus, LV_SIGNAL_FOCUS, NULL);
                 if(indev_reset_check(proc)) return;
-                lv_event_send(indev_obj_act, LV_EVENT_FOCUSED, NULL);
+                lv_event_send(obj_to_focus, LV_EVENT_FOCUSED, NULL);
                 if(indev_reset_check(proc)) return;
             }
         }
@@ -1489,7 +1490,6 @@ static lv_obj_t * get_dragged_obj(lv_obj_t * obj)
 static void indev_gesture(lv_indev_proc_t * proc)
 {
 
-    if(proc->types.pointer.drag_in_prog) return;
     if(proc->types.pointer.gesture_sent) return;
 
     lv_obj_t * gesture_obj = proc->types.pointer.act_obj;
